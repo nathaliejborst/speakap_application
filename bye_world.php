@@ -1,14 +1,16 @@
-<html>
-    <head>
-        <title>Bye World!!!!</title>
-        <script type="text/javascript">
-            var Speakap = { appId: "2900fd4ddb000f04 ", signedRequest: "b10cbcc2d6ffda09b59a7a3595c448f1855b1b83f0b09c30724ebb2254cd067d" };
-        </script>
-        <script type="text/javascript" src="js/jquery.min.js"></script>
-        <script type="text/javascript" src="js/speakap.js"></script>
-    </head>
+<?php
 
-    <body>
-        <p>Hello Speakap user!</p>
-    </body>
-</html>
+error_reporting(E_ALL);
+init_set("display_errors", 1);
+
+include 'vendor/autoload.php';
+
+use Speakap\SDK as SpeakapSDK;
+
+$signedRequest = new SpeakapSDK\SignedRequest('appID', 'Secret');
+
+echo 'Hello world :)'
+
+if (!$validator->validateSignature($_POST)) {
+    die('Invalid signature');
+}

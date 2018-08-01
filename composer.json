@@ -1,6 +1,11 @@
 {
     "name": "nathalie/tutorial",
     "description": "",
+    "autoload": {
+        "psr-0": {
+            "Speakap": [ "php/src/" ]
+        }
+    },
     "require": {
         "php": ">=5.4.10",
         "speakap/sdk" : "*"
