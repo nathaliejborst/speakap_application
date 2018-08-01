@@ -1,0 +1,29 @@
+{
+    "name": "speakap/sdk",
+    "description": "The Speakap SDK",
+    "license": "MIT",
+    "autoload": {
+        "psr-0": {
+            "Speakap\\Tests": [ "php/tests/" ],
+            "Speakap": [ "php/src/" ]
+        }
+    },
+    "config": {
+        "bin-dir": "php/bin",
+        "notify-on-install": false
+    },
+    "require": {
+        "php": ">=5.4.10",
+        "speakap/sdk" : "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.0.*"
+    },
+    "minimum-stability":  "dev",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/SpeakapBV/Speakap-SDK.git"
+        }
+                    ]
+    }
