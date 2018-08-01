@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Speakap\\Tests' => array($baseDir . '/php/tests'),
-    'Speakap' => array($baseDir . '/php/src'),
+    'Speakap\\Tests' => array($vendorDir . '/speakap/sdk/php/tests'),
+    'Speakap' => array($vendorDir . '/speakap/sdk/php/src'),
 );

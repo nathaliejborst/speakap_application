@@ -1,17 +1,6 @@
 {
-    "name": "speakap/sdk",
-    "description": "The Speakap SDK",
-    "license": "MIT",
-    "autoload": {
-        "psr-0": {
-            "Speakap\\Tests": [ "php/tests/" ],
-            "Speakap": [ "php/src/" ]
-        }
-    },
-    "config": {
-        "bin-dir": "php/bin",
-        "notify-on-install": false
-    },
+    "name": "nathalie/tutorial",
+    "description": "",
     "require": {
         "php": ">=5.4.10",
         "speakap/sdk" : "*"
