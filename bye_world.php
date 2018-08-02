@@ -1,14 +1,80 @@
 <?php
+
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 require 'vendor/autoload.php';
 
-$signedRequest = new \Speakap\SDK\SignedRequest('2901771f37000d34', 'af37fd105d5f047a1d4e60c6492991b5f6d526de51efdbc9efe927aa0665d7ba');
+
+// Make a signed request
+$signedRequest = new \Speakap\SDK\SignedRequest('290268537a00047c ', '1316056a7fb99da3443d1a32aab351fb2338bd6aa8a683ef71dcdcc53fccb85d');
 
 
 if (!$signedRequest->validateSignature($_POST)) {
     die('Invalid signature');
 }
 
-echo 'Bye world ...';
+$encSignedReq = $signedRequest->getSignedRequest($_POST);
+
+$signedParams = $signedRequest->getSignedParameters($_POST);
+
+$baseUrl = 'https://api.test.speakap.nl/networks/' . $signedParams['networkEID'];
+
+$accessToken = '290268537a00047c_1316056a7fb99da3443d1a32aab351fb2338bd6aa8a683ef71dcdcc53fccb85d';
+
+
+
+// Get current user details
+$chCurrentUser = curl_init("$baseUrl/users/{$signedParams['userEID']}/");
+
+curl_setopt_array($chCurrentUser, array(
+    CURLOPT_HEADER => false,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => array(
+        'Accept: application/vnd.speakap.api-v1.4+json',
+        'Authorization: Bearer ' . $accessToken
+    )
+));
+
+$response = curl_exec($chCurrentUser);
+curl_close($chCurrentUser);
+
+$chCurrentUser = json_decode($response);
+
+// Welcome current user
+echo "<img style=\"-webkit-user-select:none; display:block; margin:auto;\" src=\"{$chCurrentUser->avatarThumbnailUrl}\">";
+echo "<p style=\"text-align:center;\">Hello {$chCurrentUser->fullName} !</p>";
+echo "<p>All users in network!</p>";
+
+
+
+
+// Get all users in network
+$chUsers = curl_init("$baseUrl/users/");
+
+curl_setopt_array($chUsers, array(
+    CURLOPT_HEADER => false,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => array(
+        'Accept: application/vnd.speakap.api-v1.4+json',
+        'Authorization: Bearer ' . $accessToken
+    )
+));
+
+$response = curl_exec($chUsers);
+curl_close($chUsers);
+
+$users = json_decode($response);
+
+$usersArr = $users->users;
+
+foreach ($usersArr as $someUser) {
+    // var_dump($someUser);
+    echo "<p>Hello {$someUser->EID} !</p>";
+};
+//
+// var_dump($users->users[0]->EID);
+// // $userEID = $user->users[0]->EID
+// // echo "<p>Hello {$user->fullName}!</p>";
+//
+// echo "<p>Hello {$users->users[0]->EID} !</p>";
