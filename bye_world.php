@@ -5,7 +5,6 @@ ini_set("display_errors", 1);
 
 require 'vendor/autoload.php';
 
-
 // Make a signed request
 $signedRequest = new \Speakap\SDK\SignedRequest('290268537a00047c ', '1316056a7fb99da3443d1a32aab351fb2338bd6aa8a683ef71dcdcc53fccb85d');
 
@@ -20,26 +19,61 @@ $signedParams = $signedRequest->getSignedParameters($_POST);
 
 $baseUrl = 'https://api.test.speakap.nl/networks/' . $signedParams['networkEID'];
 
+
 $accessToken = '290268537a00047c_1316056a7fb99da3443d1a32aab351fb2338bd6aa8a683ef71dcdcc53fccb85d';
 
+function getUser($userEID) {
+    global $baseUrl;
+    global $accessToken;
 
+    // Get current user details
+    $chCurrentUser = curl_init("$baseUrl/users/{$userEID}/");
 
-// Get current user details
-$chCurrentUser = curl_init("$baseUrl/users/{$signedParams['userEID']}/");
+    curl_setopt_array($chCurrentUser, array(
+        CURLOPT_HEADER => false,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => array(
+            'Accept: application/vnd.speakap.api-v1.4+json',
+            'Authorization: Bearer ' . $accessToken
+        )
+    ));
 
-curl_setopt_array($chCurrentUser, array(
-    CURLOPT_HEADER => false,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => array(
-        'Accept: application/vnd.speakap.api-v1.4+json',
-        'Authorization: Bearer ' . $accessToken
-    )
-));
+    $response = curl_exec($chCurrentUser);
+    curl_close($chCurrentUser);
 
-$response = curl_exec($chCurrentUser);
-curl_close($chCurrentUser);
+    $chCurrentUser = json_decode($response);
 
-$chCurrentUser = json_decode($response);
+    return $chCurrentUser;
+
+}
+
+function getAllUsers() {
+    global $baseUrl;
+    global $accessToken;
+
+    // Get all users in network
+    $chUsers = curl_init("$baseUrl/users/");
+
+    curl_setopt_array($chUsers, array(
+        CURLOPT_HEADER => false,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => array(
+            'Accept: application/vnd.speakap.api-v1.4+json',
+            'Authorization: Bearer ' . $accessToken
+        )
+    ));
+
+    $response = curl_exec($chUsers);
+    curl_close($chUsers);
+
+    $users = json_decode($response);
+
+    // Return array with all users
+    return $users->users;
+}
+
+// Get current in user
+$chCurrentUser = getUser($signedParams['userEID']);
 
 // Welcome current user
 echo "<img style=\"-webkit-user-select:none; display:block; margin:auto;\" src=\"{$chCurrentUser->avatarThumbnailUrl}\">";
@@ -49,24 +83,7 @@ echo "<p>All users in network!</p>";
 
 
 
-// Get all users in network
-$chUsers = curl_init("$baseUrl/users/");
-
-curl_setopt_array($chUsers, array(
-    CURLOPT_HEADER => false,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => array(
-        'Accept: application/vnd.speakap.api-v1.4+json',
-        'Authorization: Bearer ' . $accessToken
-    )
-));
-
-$response = curl_exec($chUsers);
-curl_close($chUsers);
-
-$users = json_decode($response);
-
-$usersArr = $users->users;
+$usersArr = getAllUsers();
 
 foreach ($usersArr as $someUser) {
     // var_dump($someUser);
